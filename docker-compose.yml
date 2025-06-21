@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: budget
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  web:
+    build: .
+    command: bundle exec rails s -b 0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://budget:password@db:5432/budget_db
+volumes:
+  db_data:
