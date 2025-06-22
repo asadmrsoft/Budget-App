@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  name: git-clone-run
+spec:
+  taskRef:
+    name: git-clone
+  params:
+    - name: url
+      value: "https://github.com/tektoncd/catalog"
+    - name: revision
+      value: "main"
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "true"
+  workspaces:
+    - name: output
+      volumeClaimTemplate:
+        metadata:
+          name: git-clone-pvc
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 500Mi
