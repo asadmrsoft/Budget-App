@@ -4,11 +4,17 @@ metadata:
   name: budget-app-pipeline
   namespace: tekton-pipelines
 spec:
+  workspaces:
+    - name: source
+
   tasks:
     - name: git-clone
       taskRef:
         name: git-clone
         kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: source
       params:
         - name: url
           value: 'https://github.com/asadmrsoft/Budget-App.git'
@@ -20,14 +26,14 @@ spec:
     - name: npm-install
       runAfter: [git-clone]
       taskSpec:
+        workspaces:
+          - name: source
         steps:
           - name: install
             image: node:18
             script: |
               cd $(workspaces.source.path)
               npm install
-        workspaces:
-          - name: source
-
-  workspaces:
-    - name: source
+      workspaces:
+        - name: source
+          workspace: source
